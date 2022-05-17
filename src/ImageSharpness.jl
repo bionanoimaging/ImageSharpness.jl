@@ -30,6 +30,11 @@ function image_sharpness(arr::AbstractArray{T, 2}, mode=:TV) where T
     end
 end
 
+"""
+    get_image_names(path, ending="tif")
+
+Returns a list of images with file `ending` located at `path`.
+"""
 function get_image_names(path, ending="tif")
     files = readdir(path)   
     files = filter(x -> endswith(lowercase(x), ending), files)
@@ -46,8 +51,11 @@ Only analyze images with a certain `ending` (e.g. `img1.tif`).
 
 Mode for image sharpness can be set with `mode=:TV`.
 See [`ImageSharpness.image_sharpness`](@ref) for all options.
+
+
+`use_HTML=true` for HTML formatting in Pluto.
 """
-function assess_sharpness(path, ending="tif"; mode=:TV)
+function assess_sharpness(path, ending="tif"; mode=:TV, use_HTML=true)
     imgs = get_image_names(path, ending)
    
     data = Matrix{Any}(undef, length(imgs), 2) 
@@ -63,8 +71,11 @@ function assess_sharpness(path, ending="tif"; mode=:TV)
     end
     
     data[:, 2] ./= maximum(data[:, 2])
-    return pretty_table(HTML, data)
-
+    if use_HTML
+        return pretty_table(HTML, data)
+    else
+        return pretty_table(data)
+    end
 end
 
 
