@@ -29,6 +29,9 @@ using PlutoUI, ImageSharpness, TestImages, IndexFunArrays, Colors, FourierTools,
 # ╔═╡ 16a3db2d-3dee-4f40-bee3-f6556520245b
 img = Float32.(testimage("resolution_test"));
 
+# ╔═╡ aa1209e4-9ce1-4cdf-a909-7e81799bbe52
+
+
 # ╔═╡ cb0d96df-d1dc-4a84-a140-8a0b0a2de4b0
 @bind sigma Slider(0.1:0.1:20, show_value=true)
 
@@ -54,6 +57,13 @@ Sharp image: $(image_sharpness(img))
 Blurry image: $(image_sharpness(img_b))
 "
 
+# ╔═╡ 70d99409-fc2c-43b7-bd8f-42d303d0bf5e
+md"
+Sharp image: $(image_sharpness(img, :variance))
+
+Blurry image: $(image_sharpness(img_b, :variance))
+"
+
 # ╔═╡ d2eb087f-96a6-462b-a3d0-6f9ccd6ceb94
 [Gray.(img_b) Gray.(img)]
 
@@ -61,10 +71,10 @@ Blurry image: $(image_sharpness(img_b))
 
 
 # ╔═╡ 93a4ef45-4ca8-40b0-b9da-e56a1aca9789
-ImageSharpness.assess_sharpness("/hme/fxw/Documents/Uni/projects/ELETTRA/images/")
+ImageSharpness.assess_sharpness("/home/fxw/Documents/Uni/projects/ELETTRA/images/", mode=:variance)
 
-# ╔═╡ fe324964-d8c8-4830-9080-1057a8fbe4b3
-
+# ╔═╡ 305a7710-3fa6-46a1-a6b3-5c6bb0e48739
+Revise.retry()
 
 # ╔═╡ Cell order:
 # ╠═e273b6a0-d5c5-11ec-0160-390e14c5506f
@@ -76,9 +86,11 @@ ImageSharpness.assess_sharpness("/hme/fxw/Documents/Uni/projects/ELETTRA/images/
 # ╠═a5910f24-fdf7-4478-95c1-2d6c7f805deb
 # ╠═0f6656dc-2b55-4d80-998a-d2b47f6c780f
 # ╠═1df0d401-fddf-4184-92a1-652c52ea14ec
+# ╠═aa1209e4-9ce1-4cdf-a909-7e81799bbe52
 # ╟─cb0d96df-d1dc-4a84-a140-8a0b0a2de4b0
-# ╟─42d6f552-e6d2-4d25-bde7-572427a7afa6
+# ╠═42d6f552-e6d2-4d25-bde7-572427a7afa6
+# ╠═70d99409-fc2c-43b7-bd8f-42d303d0bf5e
 # ╠═d2eb087f-96a6-462b-a3d0-6f9ccd6ceb94
 # ╠═c787f9f9-7631-4682-8ba7-c57cc20f94be
 # ╠═93a4ef45-4ca8-40b0-b9da-e56a1aca9789
-# ╠═fe324964-d8c8-4830-9080-1057a8fbe4b3
+# ╠═305a7710-3fa6-46a1-a6b3-5c6bb0e48739
