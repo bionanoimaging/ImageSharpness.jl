@@ -2,7 +2,8 @@ module ImageSharpness
 
 export image_sharpness
 
-using Tullio, NDTools, TiffImages, Colors
+using Tullio, NDTools, TiffImages, Colors, Statistics, PrettyTables
+
 
 function TV(img)
     return @tullio s = sqrt(abs2(img[i, j] - img[i + 1, j]) +
@@ -10,9 +11,20 @@ function TV(img)
 end
 
 
+"""
+    image_sharpness(arr, mode)
+
+Assess image sharpness of an array.
+Modes are:
+
+* `:TV`: Total variation
+* `:variance`: variance of all pixels
+"""
 function image_sharpness(arr::AbstractArray{T, 2}, mode=:TV) where T
     if mode == :TV
         return TV(arr)
+    elseif mode == :variance
+        return var(arr)
     else
         throw(ArgumentError("Invalid mode $mode"))
     end
@@ -25,18 +37,35 @@ function get_image_names(path, ending="tif")
 end
 
 
+"""
+    assess_sharpness(path, ending="tif"; mode=:TV)
 
-function assess_sharpness(path, ending="tif")
+
+Assess the image sharpness of images located at `path`.
+Only analyze images with a certain `ending` (e.g. `img1.tif`).
+
+Mode for image sharpness can be set with `mode=:TV`.
+See [`ImageSharpness.image_sharpness`](@ref) for all options.
+"""
+function assess_sharpness(path, ending="tif"; mode=:TV)
     imgs = get_image_names(path, ending)
-    
-    for img_f in imgs
-        img = TiffImages.load(joinpath(path, img_f))
-        @show img_f,  image_sharpness(Float32.(Gray.(img.data))) 
+   
+    data = Matrix{Any}(undef, length(imgs), 2) 
+    for (i, img_f) in enumerate(imgs)
+        try 
+            img = TiffImages.load(joinpath(path, img_f))
+        catch
+            continue
+        end
+        img = Float32.(Gray.(img))
+        data[i, 1] = img_f
+        data[i, 2] = image_sharpness(img, mode)
     end
-
+    
+    data[:, 2] ./= maximum(data[:, 2])
+    return pretty_table(HTML, data)
 
 end
-
 
 
 end # module
