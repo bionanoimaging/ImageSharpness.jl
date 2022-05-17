@@ -24,10 +24,13 @@ Pkg.activate(".")
 using Revise
 
 # ╔═╡ c1557852-f096-4109-a367-3748d8acdd48
-using PlutoUI, ImageSharpness, TestImages, IndexFunArrays, Colors, FourierTools, ImageShow
+using PlutoUI, ImageSharpness, TestImages, IndexFunArrays, Colors, FourierTools, ImageShow, Noise
 
 # ╔═╡ 16a3db2d-3dee-4f40-bee3-f6556520245b
 img = Float32.(testimage("resolution_test"));
+
+# ╔═╡ 05f45ce1-35b8-4def-a07d-da1be9904606
+img_n = poisson(img, 100);
 
 # ╔═╡ aa1209e4-9ce1-4cdf-a909-7e81799bbe52
 
@@ -42,7 +45,7 @@ begin
 end
 
 # ╔═╡ 33ce1407-ff92-447f-8a14-daa1a1421631
-img_b = conv_psf(img, kernel);
+img_b = poisson(conv_psf(img, kernel), 100);
 
 # ╔═╡ 0f6656dc-2b55-4d80-998a-d2b47f6c780f
 sum(kernel)
@@ -52,14 +55,14 @@ Gray.(kernel ./ maximum(kernel));
 
 # ╔═╡ 42d6f552-e6d2-4d25-bde7-572427a7afa6
 md"
-Sharp image: $(image_sharpness(img))
+Sharp image: $(image_sharpness(img_n))
 
 Blurry image: $(image_sharpness(img_b))
 "
 
 # ╔═╡ 70d99409-fc2c-43b7-bd8f-42d303d0bf5e
 md"
-Sharp image: $(image_sharpness(img, :variance))
+Sharp image: $(image_sharpness(img_n, :variance))
 
 Blurry image: $(image_sharpness(img_b, :variance))
 "
@@ -71,7 +74,7 @@ Blurry image: $(image_sharpness(img_b, :variance))
 
 
 # ╔═╡ 93a4ef45-4ca8-40b0-b9da-e56a1aca9789
-ImageSharpness.assess_sharpness("/home/fxw/Documents/Uni/projects/ELETTRA/images/", mode=:variance)
+ImageSharpness.assess_sharpness("/home/fxw/Documents/Uni/projects/ELETTRA/images/", mode=:TV)
 
 # ╔═╡ 305a7710-3fa6-46a1-a6b3-5c6bb0e48739
 Revise.retry()
@@ -82,6 +85,7 @@ Revise.retry()
 # ╠═f0d75658-5dfd-407d-8730-016c4391a87e
 # ╠═c1557852-f096-4109-a367-3748d8acdd48
 # ╠═16a3db2d-3dee-4f40-bee3-f6556520245b
+# ╠═05f45ce1-35b8-4def-a07d-da1be9904606
 # ╠═33ce1407-ff92-447f-8a14-daa1a1421631
 # ╠═a5910f24-fdf7-4478-95c1-2d6c7f805deb
 # ╠═0f6656dc-2b55-4d80-998a-d2b47f6c780f
